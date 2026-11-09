@@ -1,0 +1,21 @@
+# test days: 1st and 15th of each month (next complete day if needed)
+# 2026-10-15 removed on 2026-11-09: its trees use imbalance prices of October 2026, not yet checked against Terna public data
+2026-01-01
+2026-01-15
+2026-02-01
+2026-02-15
+2026-03-01
+2026-03-15
+2026-04-01
+2026-04-15
+2026-05-01
+2026-05-15
+2026-06-01
+2026-06-15
+2026-07-01
+2026-07-15
+2026-08-01
+2026-08-15
+2026-09-01
+2026-09-15
+2026-10-01

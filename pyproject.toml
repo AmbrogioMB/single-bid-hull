@@ -1,0 +1,12 @@
+[project]
+name = "single-bid-hull"
+version = "0.1.0"
+description = "Experiments of the paper on single bids and bid curves in sequential electricity auctions"
+requires-python = ">=3.10"
+dependencies = ["numpy", "pandas", "gurobipy", "pytest"]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 110
