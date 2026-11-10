@@ -45,6 +45,13 @@ def parse_args(argv=None):
     p.add_argument("--price-dir", default=data.DEFAULT_PRICE_DIR)
     p.add_argument("--runs", nargs="+", default=["hull", "disj_lp", "bigm_lp", "disj", "bigm", "ind"],
                    help="formulations to solve: hull, disj, bigm, ind; suffix _lp = LP relaxation")
+    p.add_argument("--mip-gap", type=float, default=1e-6, help="relative MIP gap (0 = prove optimality)")
+    p.add_argument("--feas-tol", type=float, default=None, help="Gurobi FeasibilityTol (default: solver's)")
+    p.add_argument("--int-feas-tol", type=float, default=None, help="Gurobi IntFeasTol (default: solver's)")
+    p.add_argument("--numeric-focus", type=int, default=None, help="Gurobi NumericFocus (default: solver's)")
+    p.add_argument("--price-decimals", type=int, default=None, help="round the tree prices to this many decimals")
+    p.add_argument("--tasks-file", default=None,
+                   help="CSV with columns kind,date,hour,branching,eta: solve only these tasks (of --kind)")
     p.add_argument("--out", required=True)
     args = p.parse_args(argv)
     dates = list(args.dates)
@@ -78,15 +85,20 @@ def run_task(job):
             tr = trees.day_instance(FRAME, date, branching, args.window_days)
         else:
             tr = trees.period_instance(FRAME, date, hour, branching, args.window_days)
+        if args.price_decimals is not None:
+            trees.round_prices(tr, args.price_decimals)
         row = {"kind": args.kind, "zone": args.zone, "date": date, "hour": hour, "branching": branching,
-               "eta": eta, "beta": args.beta, "share": args.share, "R": tr.R, "periods": tr.P,
+               "eta": eta, "beta": args.beta, "share": args.share, "mip_gap": args.mip_gap,
+               "price_decimals": args.price_decimals, "feas_tol": args.feas_tol, "int_feas_tol": args.int_feas_tol,
+               "numeric_focus": args.numeric_focus, "R": tr.R, "periods": tr.P,
                "nodes_tree": len(tr.stage), "leaves": len(tr.leaves), "decisions": len(tr.decisions),
                "q_da_mean": float(tr.q_da.mean()), "observations": tr.n_obs,
                "build_seconds": time.perf_counter() - started}
         smallest, small, pairs = models.price_gaps(tr)
         row.update({"min_price_gap": smallest, "gaps_below_eps": small, "pairs_below_eps": pairs,
                     "no_trade": models.no_trade_value(tr, eta, args.beta)})
-        env = models.make_env(threads=1, time_limit=args.time_limit)
+        env = models.make_env(threads=1, time_limit=args.time_limit, mip_gap=args.mip_gap, feas_tol=args.feas_tol,
+                              int_feas_tol=args.int_feas_tol, numeric_focus=args.numeric_focus)
         if eta == 0 and "hull" in args.runs:
             row["closed_form"] = models.closed_form(tr, args.share)
         runs = [(r.removesuffix("_lp"), r.endswith("_lp")) for r in args.runs]
@@ -112,7 +124,13 @@ def main(argv=None):
     args = parse_args(argv)
     os.makedirs(args.out, exist_ok=True)
     hours = args.hours if args.kind == "period" else [-1]
-    tasks = [(d, h, b, e) for d in args.dates for h in hours for b in args.branching for e in args.eta]
+    if args.tasks_file:
+        chosen = pd.read_csv(args.tasks_file)
+        chosen = chosen[chosen["kind"] == args.kind]
+        tasks = [(dt.date.fromisoformat(str(r.date)), int(r.hour), int(r.branching), float(r.eta))
+                 for r in chosen.itertuples()]
+    else:
+        tasks = [(d, h, b, e) for d in args.dates for h in hours for b in args.branching for e in args.eta]
     # Largest trees first, so that the slow tasks do not end up alone at the end.
     tasks.sort(key=lambda t: (-t[2], -t[3]))
     jobs = [(args, t) for t in tasks]

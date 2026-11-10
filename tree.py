@@ -149,3 +149,12 @@ def day_instance(frame, date, branching, window_days=365, seed=0):
     if len(today) != 96:
         raise ValueError(f"{date} does not have 96 quarter-hours")
     return build(auctions, imbalance, production, active, branching, today["MGP"].to_numpy(), production.mean(0), seed)
+
+
+def round_prices(tree, decimals):
+    """Round the clearing and imbalance prices of all nodes (e.g. to the market tick of 0.01 EUR/MWh).
+
+    After rounding, distinct prices of the children of a node differ by at least 10**-decimals."""
+    for i in range(1, len(tree.price)):
+        tree.price[i] = np.round(tree.price[i], decimals)
+    return tree

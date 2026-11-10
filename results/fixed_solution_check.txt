@@ -1,0 +1,18 @@
+task 2026-09-15 h22 b5 eta0.9: disj status 2 objective -27.382215939411; bigm status 2 objective -27.382327360231
+  node 213 (stage 2), child prices [178.26 190.   253.  ]
+    disj accepted [-0.230866 -0.230866 -0.230866]
+    bigm accepted [-0.230866 -0.230866  0.      ]
+  bigm with the disjunctive accepted quantities fixed: status 2, objective -27.382215939411; improvement over its reported optimum 1.114e-04 EUR (4.069e-06 relative)
+  solver shortfall confirmed: True
+task 2026-08-01 h21 b5 eta0.9: disj status 2 objective -21.047123731979; ind status 2 objective -21.047225416898
+  node 404 (stage 2), child prices [260.04 207.74 183.22 220.43 274.95]
+    disj accepted [-0.229835 -0.229835 -0.229835 -0.229835 -0.229835]
+    ind accepted [-0.229835 -0.229835 -0.229835 -0.229835  0.      ]
+  ind with the disjunctive accepted quantities fixed: status 2, objective -21.047123731979; improvement over its reported optimum 1.017e-04 EUR (4.831e-06 relative)
+  solver shortfall confirmed: True
+task 2026-10-01 h19 b5 eta0.9: disj status 2 objective -0.505809014175; ind status 2 objective -0.505911354862
+  node 302 (stage 2), child prices [294.8   271.2   289.85  284.9   287.765]
+    disj accepted [-0.299456 -0.299456 -0.299456 -0.299456 -0.299456]
+    ind accepted [ 0.       -0.299456 -0.299456 -0.299456 -0.299456]
+  ind with the disjunctive accepted quantities fixed: status 2, objective -0.505809014175; improvement over its reported optimum 1.023e-04 EUR (1.023e-04 relative)
+  solver shortfall confirmed: True

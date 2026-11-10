@@ -15,15 +15,23 @@ import numpy as np
 from gurobipy import GRB
 
 EPS = 0.01  # big-M formulation: a rejected bid has a price at least EPS away from the clearing price
+ROUNDOFF = 1e-9  # price_gaps: a cent is not exact in binary floating point, so gaps within this of EPS count as EPS
 HOURS = 0.25  # duration of a period
 
 
-def make_env(threads=1, time_limit=600.0, mip_gap=1e-6):
+def make_env(threads=1, time_limit=600.0, mip_gap=1e-6, feas_tol=None, int_feas_tol=None, numeric_focus=None):
+    """Gurobi environment; tolerances left at the solver defaults unless given."""
     env = gp.Env(empty=True)
     env.setParam("OutputFlag", 0)
     env.setParam("Threads", threads)
     env.setParam("TimeLimit", time_limit)
     env.setParam("MIPGap", mip_gap)
+    if feas_tol is not None:
+        env.setParam("FeasibilityTol", feas_tol)
+    if int_feas_tol is not None:
+        env.setParam("IntFeasTol", int_feas_tol)
+    if numeric_focus is not None:
+        env.setParam("NumericFocus", numeric_focus)
     env.start()
     return env
 
@@ -202,7 +210,7 @@ def no_trade_value(tree, eta, beta):
 def price_gaps(tree):
     """Spacing of consecutive distinct child prices, over all decision nodes and periods.
 
-    Returns the smallest positive gap, the number of gaps below EPS, and the number of
+    Returns the smallest positive gap, the number of gaps below EPS (up to ROUNDOFF), and the number of
     (node, period) pairs with at least one such gap (where big-M and indicators are not exact).
     """
     smallest, small, pairs = np.inf, 0, 0
@@ -213,8 +221,8 @@ def price_gaps(tree):
             gaps = np.diff(prices)
             if len(gaps):
                 smallest = min(smallest, gaps.min())
-                small += int((gaps < EPS).sum())
-                pairs += int((gaps < EPS).any())
+                small += int((gaps < EPS - ROUNDOFF).sum())
+                pairs += int((gaps < EPS - ROUNDOFF).any())
     return smallest, small, pairs
 
 

@@ -26,8 +26,10 @@ as mixed-integer programs or linear relaxations, with a mean-CVaR objective.
 | `make_table.py` | the table of the paper and every number quoted in the text, from the CSVs |
 | `fetch_weather.py` | downloads the weather data (`data/weather.csv`, included) |
 | `dates.txt` | the 19 test days |
+| `diag_tasks.csv` | the 17 tasks of the tolerance diagnosis |
+| `check_fixed_solution.py` | for a shortfall of big-M or indicators: fixes the disjunctive optimum in that model and re-solves it (log in `results/fixed_solution_check.txt`) |
 | `tests/` | numerical checks of the theorems (`uv run pytest`, 49 tests) |
-| `results/` | the CSVs of the paper (one row per task) |
+| `results/` | the results of the paper, one compressed CSV per part (one row per task), and the table and numbers made from them |
 
 ## Setup
 
@@ -61,8 +63,55 @@ uv run python make_table.py
 
 The sensitivity to the bid bound uses `--share 0.05` (or 0.2, 0.5) `--branching 3 --eta 0.5 0.9
 --runs hull disj` with outputs in `results/period_s0.05` and similar. Each MIP has a time limit of 600 s
-(`--time-limit`); the daily part takes about an hour with 24 workers. Finished tasks are skipped, so an
-interrupted run can be restarted.
+(`--time-limit`); for the paper, the daily part took 51 minutes with 24 workers on an Intel Xeon
+w9-3495X. Finished tasks are skipped, so an interrupted run can be restarted.
+
+Three further runs complete the paper:
+
+```bash
+# certified optimal values: hull LP and disjunctive MILP with MIP gap 0 (same for day and the *_s* parts)
+uv run python run.py --kind period --dates-file dates.txt --hours all --branching 3 5 --eta 0 0.5 0.9 --runs hull disj --mip-gap 0 --workers 8 --out results/tight_period
+# prices rounded to the market tick of 0.01 EUR/MWh, all formulations (same for day)
+uv run python run.py --kind period --dates-file dates.txt --hours all --branching 3 5 --eta 0 0.5 0.9 --price-decimals 2 --workers 8 --out results/round_period
+# the 17 tasks where a price-based formulation is below the disjunctive optimum although all price gaps are at least 0.01
+uv run python run.py --kind period --tasks-file diag_tasks.csv --runs disj bigm ind --mip-gap 0 --feas-tol 1e-9 --int-feas-tol 1e-9 --numeric-focus 3 --out results/diag_period
+# the three shortfalls left by the diagnosis
+uv run python check_fixed_solution.py --tasks-file results/remaining_shortfalls.csv
+```
+
+The sensitivity parts of the certified run use `--share 0.05` (or 0.2, 0.5) `--branching 3 --eta 0.5 0.9`,
+with outputs in `results/tight_period_s0.05` and similar.
+
+`run.py` writes one CSV per task in `results/<part>/`; `make_table.py` reads those folders or, if they do
+not exist, the merged files `results/<part>.csv.gz` included here, and writes `results/table_results.tex`
+and `results/numbers.txt`. With the included files, `uv run python make_table.py` reproduces the table
+and the numbers of the paper without solving anything.
+
+## Accuracy of the price-based formulations (details for Section 6)
+
+All counts are in `results/numbers.txt`. Relative differences are divided by max(1, |V|), with V the
+certified optimum (disjunctive formulation solved with MIP gap 0, parts `tight_*`).
+
+- **Unrounded prices.** Runs reported optimal are never above the certified optimum by more than 1e-6.
+  They are below it by more than 1e-6 in 54 indicator runs (at most 2.55e-4) and 36 big-M runs (at most
+  1.11e-4); time-limited big-M incumbents are up to 6.93e-4 below.
+- **Small price gaps.** The big-M and indicator formulations use eps = 0.01 EUR/MWh between a rejected bid
+  price and the clearing price, so they represent every single bid only if distinct child prices differ by
+  at least eps (gaps within 1e-9 of eps, the floating-point roundoff of a cent, count as eps). Some gap is
+  smaller on 162 of 228 daily and 12 of 2736 period tasks (54 of 76 and 4 of 912 distinct trees). Of the
+  54 and 36 shortfalls above, 46 and 23 are on these tasks.
+- **Diagnosis.** The other shortfalls are on 17 tasks (`diag_tasks.csv`). Re-solved with MIP gap 0,
+  FeasibilityTol and IntFeasTol 1e-9, and NumericFocus 3 (parts `diag_period`, `diag_period_extra`), all but
+  three disappear. In the three left (`results/remaining_shortfalls.csv`), `check_fixed_solution.py` fixes the
+  accepted quantities of the disjunctive optimum in the price-based model: the model is feasible and its
+  objective is better than the reported optimum (`results/fixed_solution_check.txt`), so the shortfall is a
+  solver error, not a difference between the formulations.
+- **Prices rounded to 0.01 EUR/MWh** (parts `round_*`). All formulations represent the same single bids. On the
+  114 daily tasks with b >= 3 and eta > 0, big-M reaches the time limit on 74 and indicators on 19; on all
+  daily tasks with eta > 0, the median ratio to the disjunctive solver time is 67 for indicators (all runs) and
+  57 for big-M (runs reported optimal); the disjunctive formulation needs at most 11.6 s. Compared with the
+  disjunctive objective of the same run (MIP gap 1e-6), runs reported optimal are below it by more than 1e-6
+  in 36 indicator runs (at most 6.34e-5) and 34 big-M runs (at most 1.21e-4); these were not diagnosed.
 
 ## License
 
