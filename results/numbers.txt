@@ -1,22 +1,22 @@
 tasks 2964; eta=0 by kind {'day': 76, 'period': 912}; eta>0 per kind/b {('day', 2): 38, ('day', 3): 38, ('day', 4): 38, ('day', 5): 38, ('period', 3): 912, ('period', 5): 912}
-curve values certified with MIP gap 0: True; max disj bound - incumbent (tight) 1.93e-07 EUR; max |hull tight - hull main| 0.0e+00; tight main parts (period, day): disj max solver s 10.131, max build s 2.061, share at root 99.09%
+curve values certified with MIP gap 0: True; max disj bound - incumbent (tight) 1.93e-07 EUR; max |hull tight - hull main| 0.0e+00; tight main parts (period, day): disj max solver s 2.710, max build s 0.621, share at root 99.09%
 eta=0: max rel |closed form - hull| 3.86e-15; max rel |single - hull| 2.15e-15
 observations: period min 1404, day 349-356
 period eta>0: curve EUR mean 0.012309 max 2.5586 min -2.1e-13; % of gain mean 0.06515 max 7.8315; gain EUR mean 17.71 min 0.512; LP opt 66.0%; big-M root gap mean 0.456% max 132.20%
 day eta>0: curve EUR mean 0.006065 max 0.1944 min -7.3e-12; % of gain mean 0.00071 max 0.0157; gain EUR mean 750.34 min 320.291; LP opt 83.6%; big-M root gap mean 0.925% max 57.93%
 LP opt range by row: 60-100%
-disj (main): all optimal True; max solver s 5.131; share root 99.39%; max build s 1.61
-[main, all tasks] day eta>0 b>=3: tasks 114, big-M time-outs 64, indicator time-outs 3; day eta>0: median ratio ind/disj 61.8, bigm/disj where optimal 77.6; disj max s 5.13
-[main, all tasks] ind: optimal 2961, time limit 3; above disj by >1e-6 (optimal) 0; below by >1e-6 (optimal) 54, max 2.55e-04; of these on tasks with a price gap < eps: 46; time-limited below 2, max 2.01e-06
-[main, all tasks] bigm: optimal 2900, time limit 64; above disj by >1e-6 (optimal) 0; below by >1e-6 (optimal) 36, max 1.11e-04; of these on tasks with a price gap < eps: 23; time-limited below 52, max 6.93e-04
-[main, tasks with all price gaps >= eps] day eta>0 b>=3: tasks 10, big-M time-outs 1, indicator time-outs 0; day eta>0: median ratio ind/disj 24.2, bigm/disj where optimal 25.7; disj max s 0.78
+disj (main): all optimal True; max solver s 2.641; share root 99.39%; max build s 1.01
+[main, all tasks] day eta>0 b>=3: tasks 114, big-M time-outs 59, indicator time-outs 2; day eta>0: median ratio ind/disj 67.3, bigm/disj where optimal 86.4; disj max s 2.64
+[main, all tasks] ind: optimal 2962, time limit 2; above disj by >1e-6 (optimal) 0; below by >1e-6 (optimal) 54, max 2.55e-04; of these on tasks with a price gap < eps: 46; time-limited below 1, max 1.99e-06
+[main, all tasks] bigm: optimal 2905, time limit 59; above disj by >1e-6 (optimal) 0; below by >1e-6 (optimal) 37, max 1.11e-04; of these on tasks with a price gap < eps: 24; time-limited below 48, max 3.84e-04
+[main, tasks with all price gaps >= eps] day eta>0 b>=3: tasks 10, big-M time-outs 1, indicator time-outs 0; day eta>0: median ratio ind/disj 23.7, bigm/disj where optimal 27.6; disj max s 0.42
 [main, tasks with all price gaps >= eps] ind: optimal 2790, time limit 0; above disj by >1e-6 (optimal) 0; below by >1e-6 (optimal) 8, max 1.05e-05; of these on tasks with a price gap < eps: 0; time-limited below 0, max 0.00e+00
 [main, tasks with all price gaps >= eps] bigm: optimal 2789, time limit 1; above disj by >1e-6 (optimal) 0; below by >1e-6 (optimal) 13, max 1.11e-04; of these on tasks with a price gap < eps: 0; time-limited below 0, max -0.00e+00
 price gap < eps: tasks period 12 of 2736, day 162 of 228; distinct trees period 4 of 912, day 54 of 76; smallest positive gap 7.11e-15; gaps below 1e-9 in tasks 75
-[rounded prices] tasks 2964; tasks with a gap < eps 0 (without the roundoff allowance 150); smallest positive gap 0.0100
-[rounded prices] day eta>0 b>=3: tasks 114, big-M time-outs 74, indicator time-outs 19; day eta>0: median ratio ind/disj 67.4, bigm/disj where optimal 57.3; disj max s 11.63
-[rounded prices] ind: optimal 2945, time limit 19; above disj by >1e-6 (optimal) 0; below by >1e-6 (optimal) 36, max 6.34e-05; of these on tasks with a price gap < eps: 0; time-limited below 17, max 2.12e-04
-[rounded prices] bigm: optimal 2890, time limit 74; above disj by >1e-6 (optimal) 0; below by >1e-6 (optimal) 34, max 1.21e-04; of these on tasks with a price gap < eps: 0; time-limited below 61, max 5.42e-03
+[rounded prices] tasks 2964; tasks with a gap < eps 0 (without the roundoff allowance 0); smallest positive gap 0.0100
+[rounded prices] day eta>0 b>=3: tasks 114, big-M time-outs 67, indicator time-outs 1; day eta>0: median ratio ind/disj 72.5, bigm/disj where optimal 69.9; disj max s 3.07
+[rounded prices] ind: optimal 2963, time limit 1; above disj by >1e-6 (optimal) 0; below by >1e-6 (optimal) 37, max 6.34e-05; of these on tasks with a price gap < eps: 0; time-limited below 0, max 1.41e-07
+[rounded prices] bigm: optimal 2897, time limit 67; above disj by >1e-6 (optimal) 0; below by >1e-6 (optimal) 34, max 1.21e-04; of these on tasks with a price gap < eps: 0; time-limited below 48, max 5.97e-05
 [rounded prices] period eta>0: curve % of gain mean 0.06514 max 7.8240 (incumbent, gap 1e-6)
 [rounded prices] day eta>0: curve % of gain mean 0.00084 max 0.0158 (incumbent, gap 1e-6)
 [diagnosis, 17 tasks, tight tolerances, gap 0] disj: statuses {2: 17}; below the certified optimum by >1e-6 0, by >1e-9 0; max shortfall 3.55e-15

@@ -5,8 +5,8 @@ prices rounded to the tick) and prints, overall and for b >= 3: time-outs, solve
 time (paired, same process), nodes, root bounds against the hull LP, and objective agreement with the disjunctive
 optimum. Relative differences are divided by max(1, |V|).
 
-    python analyze_ablation.py results_v4_ablation/abl_day [--out results_v4_ablation/numbers.txt]
-    python analyze_ablation.py results/abl_day.csv.gz --out results/ablation_numbers.txt   (public repository)
+    python analyze_ablation.py results_v5/round_day [--out results_v5/ablation_numbers.txt]
+    python analyze_ablation.py results/round_day.csv.gz --out results/ablation_numbers.txt   (public repository)
 """
 import argparse
 import glob
@@ -29,11 +29,14 @@ def summary(df, label):
         t = df[f"{f}_seconds"]
         lines.append(f"  {f}: optimal {int((st == OPTIMAL).sum())}, time limit {int((st == TIME_LIMIT).sum())}; "
                      f"solver s median {t.median():.2f} max {t.max():.1f}; nodes median {df[f'{f}_nodes'].median():.0f} "
-                     f"max {df[f'{f}_nodes'].max():.0f}; build s max {df[f'{f}_build_seconds'].max():.2f}")
+                     f"max {df[f'{f}_nodes'].max():.0f}; at the root {100 * (df[f'{f}_nodes'] <= 1).mean():.0f}%; "
+                     f"build s max {df[f'{f}_build_seconds'].max():.2f}")
 
     def opt(f):
         return df[f"{f}_status"] == OPTIMAL
 
+    lines.append("  LP relaxations solved separately, solver s median: " + ", ".join(
+        f"{f} {df[f'{f}_lp_seconds'].median():.2f}" for f in ("disj", "bigmh", "bigm")))
     r_h = df["bigmh_seconds"] / df["disj_seconds"]
     r_m = (df["bigm_seconds"] / df["disj_seconds"])[opt("bigm")]
     r_mh = (df["bigm_seconds"] / df["bigmh_seconds"])[opt("bigm") & opt("bigmh")]
@@ -51,7 +54,7 @@ def summary(df, label):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("folder", help="folder of per-task CSVs, or one merged CSV (e.g. results/abl_day.csv.gz)")
+    p.add_argument("folder", help="folder of per-task CSVs, or one merged CSV (e.g. results/round_day.csv.gz)")
     p.add_argument("--out")
     args = p.parse_args()
     if os.path.isdir(args.folder):
@@ -59,6 +62,7 @@ def main():
         df = pd.concat([pd.read_csv(f) for f in files], ignore_index=True)
     else:
         df = pd.read_csv(args.folder)
+    df = df[df["eta"] > 0]  # the ablation concerns eta > 0 (a rerun part may also contain eta = 0)
     lines = [(f"ablation: {len(df)} tasks from {args.folder}; price gaps below EPS on "
               f"{int((df['pairs_below_eps'] > 0).sum())} tasks")]
     lines += summary(df, "all")

@@ -1,49 +1,55 @@
-ablation: 152 tasks from results/abl_day.csv.gz; price gaps below EPS on 0 tasks
+ablation: 152 tasks from results/round_day.csv.gz; price gaps below EPS on 0 tasks
 [all] tasks 152; by b {2: 38, 3: 38, 4: 38, 5: 38}
-  disj: optimal 152, time limit 0; solver s median 1.00 max 20.9; nodes median 1 max 415; build s max 5.60
-  bigmh: optimal 152, time limit 0; solver s median 7.90 max 123.9; nodes median 1 max 131; build s max 8.19
-  bigm: optimal 76, time limit 76; solver s median 583.93 max 600.6; nodes median 918 max 46743; build s max 10.99
-  median time ratio: bigmh/disj 7.42 (all runs), bigm/disj 48.3 (bigm optimal), bigm/bigmh 7.7 (both optimal)
+  disj: optimal 152, time limit 0; solver s median 0.25 max 3.1; nodes median 1 max 415; at the root 95%; build s max 0.87
+  bigmh: optimal 152, time limit 0; solver s median 1.52 max 21.5; nodes median 1 max 131; at the root 94%; build s max 1.98
+  bigm: optimal 85, time limit 67; solver s median 144.76 max 601.4; nodes median 4640 max 109105; at the root 13%; build s max 3.66
+  LP relaxations solved separately, solver s median: disj 0.05, bigmh 0.95, bigm 0.76
+  median time ratio: bigmh/disj 6.32 (all runs), bigm/disj 69.9 (bigm optimal), bigm/bigmh 13.3 (both optimal)
   root bound: max |bigmh_lp - hull| rel 3.51e-10; (bigm_lp - hull) rel mean 9.24e-03 max 5.79e-01
   bigmh vs disj objective (both optimal): above by >1e-6 0, below by >1e-6 6, min -7.30e-06, max 7.66e-07
   bigm vs disj objective (both optimal): above by >1e-6 0, below by >1e-6 0, min -9.61e-07, max 8.03e-07
 [b >= 3] tasks 114; by b {3: 38, 4: 38, 5: 38}
-  disj: optimal 114, time limit 0; solver s median 2.31 max 20.9; nodes median 1 max 415; build s max 5.60
-  bigmh: optimal 114, time limit 0; solver s median 18.61 max 123.9; nodes median 1 max 131; build s max 8.19
-  bigm: optimal 38, time limit 76; solver s median 600.05 max 600.6; nodes median 1285 max 46743; build s max 10.99
-  median time ratio: bigmh/disj 7.52 (all runs), bigm/disj 161.9 (bigm optimal), bigm/bigmh 20.1 (both optimal)
+  disj: optimal 114, time limit 0; solver s median 0.35 max 3.1; nodes median 1 max 415; at the root 94%; build s max 0.87
+  bigmh: optimal 114, time limit 0; solver s median 3.49 max 21.5; nodes median 1 max 131; at the root 92%; build s max 1.98
+  bigm: optimal 47, time limit 67; solver s median 600.01 max 601.4; nodes median 8990 max 109105; at the root 3%; build s max 3.66
+  LP relaxations solved separately, solver s median: disj 0.08, bigmh 1.54, bigm 1.37
+  median time ratio: bigmh/disj 6.88 (all runs), bigm/disj 248.8 (bigm optimal), bigm/bigmh 40.2 (both optimal)
   root bound: max |bigmh_lp - hull| rel 3.51e-10; (bigm_lp - hull) rel mean 1.21e-02 max 5.79e-01
   bigmh vs disj objective (both optimal): above by >1e-6 0, below by >1e-6 6, min -7.30e-06, max 7.66e-07
   bigm vs disj objective (both optimal): above by >1e-6 0, below by >1e-6 0, min -5.10e-07, max 4.36e-07
 [b = 2] tasks 38; by b {2: 38}
-  disj: optimal 38, time limit 0; solver s median 0.09 max 0.2; nodes median 1 max 1; build s max 0.52
-  bigmh: optimal 38, time limit 0; solver s median 0.65 max 1.5; nodes median 1 max 1; build s max 1.12
-  bigm: optimal 38, time limit 0; solver s median 1.75 max 13.0; nodes median 11 max 1419; build s max 0.91
-  median time ratio: bigmh/disj 7.08 (all runs), bigm/disj 20.2 (bigm optimal), bigm/bigmh 2.8 (both optimal)
+  disj: optimal 38, time limit 0; solver s median 0.03 max 0.1; nodes median 1 max 1; at the root 100%; build s max 0.12
+  bigmh: optimal 38, time limit 0; solver s median 0.16 max 0.3; nodes median 1 max 1; at the root 100%; build s max 0.22
+  bigm: optimal 38, time limit 0; solver s median 0.45 max 3.7; nodes median 11 max 1419; at the root 45%; build s max 0.21
+  LP relaxations solved separately, solver s median: disj 0.01, bigmh 0.06, bigm 0.05
+  median time ratio: bigmh/disj 5.17 (all runs), bigm/disj 17.2 (bigm optimal), bigm/bigmh 3.3 (both optimal)
   root bound: max |bigmh_lp - hull| rel 2.10e-16; (bigm_lp - hull) rel mean 7.89e-04 max 3.73e-03
   bigmh vs disj objective (both optimal): above by >1e-6 0, below by >1e-6 0, min -5.96e-07, max 6.78e-07
   bigm vs disj objective (both optimal): above by >1e-6 0, below by >1e-6 0, min -9.61e-07, max 8.03e-07
 [b = 3] tasks 38; by b {3: 38}
-  disj: optimal 38, time limit 0; solver s median 0.45 max 1.1; nodes median 1 max 1; build s max 1.38
-  bigmh: optimal 38, time limit 0; solver s median 3.41 max 13.9; nodes median 1 max 30; build s max 2.56
-  bigm: optimal 27, time limit 11; solver s median 149.96 max 600.0; nodes median 4808 max 46743; build s max 2.40
-  median time ratio: bigmh/disj 7.32 (all runs), bigm/disj 233.5 (bigm optimal), bigm/bigmh 33.5 (both optimal)
+  disj: optimal 38, time limit 0; solver s median 0.15 max 0.3; nodes median 1 max 1; at the root 100%; build s max 0.30
+  bigmh: optimal 38, time limit 0; solver s median 0.75 max 3.2; nodes median 1 max 30; at the root 97%; build s max 0.61
+  bigm: optimal 31, time limit 7; solver s median 52.95 max 600.0; nodes median 4976 max 99636; at the root 8%; build s max 0.53
+  LP relaxations solved separately, solver s median: disj 0.04, bigmh 0.65, bigm 0.41
+  median time ratio: bigmh/disj 5.33 (all runs), bigm/disj 260.0 (bigm optimal), bigm/bigmh 48.0 (both optimal)
   root bound: max |bigmh_lp - hull| rel 1.25e-10; (bigm_lp - hull) rel mean 3.91e-03 max 4.03e-02
   bigmh vs disj objective (both optimal): above by >1e-6 0, below by >1e-6 0, min -5.39e-07, max 3.56e-07
   bigm vs disj objective (both optimal): above by >1e-6 0, below by >1e-6 0, min -3.35e-07, max 3.68e-07
 [b = 4] tasks 38; by b {4: 38}
-  disj: optimal 38, time limit 0; solver s median 2.31 max 7.3; nodes median 1 max 89; build s max 2.75
-  bigmh: optimal 38, time limit 0; solver s median 18.61 max 51.6; nodes median 1 max 51; build s max 5.43
-  bigm: optimal 11, time limit 27; solver s median 600.05 max 600.2; nodes median 1752 max 19665; build s max 4.70
-  median time ratio: bigmh/disj 7.24 (all runs), bigm/disj 73.0 (bigm optimal), bigm/bigmh 11.2 (both optimal)
+  disj: optimal 38, time limit 0; solver s median 0.35 max 1.5; nodes median 1 max 89; at the root 97%; build s max 0.63
+  bigmh: optimal 38, time limit 0; solver s median 3.51 max 10.4; nodes median 1 max 51; at the root 95%; build s max 1.30
+  bigm: optimal 14, time limit 24; solver s median 600.01 max 601.2; nodes median 15172 max 109105; at the root 0%; build s max 1.11
+  LP relaxations solved separately, solver s median: disj 0.08, bigmh 1.59, bigm 1.37
+  median time ratio: bigmh/disj 7.08 (all runs), bigm/disj 160.4 (bigm optimal), bigm/bigmh 17.9 (both optimal)
   root bound: max |bigmh_lp - hull| rel 1.88e-10; (bigm_lp - hull) rel mean 2.01e-02 max 5.79e-01
   bigmh vs disj objective (both optimal): above by >1e-6 0, below by >1e-6 1, min -1.08e-06, max 5.27e-07
   bigm vs disj objective (both optimal): above by >1e-6 0, below by >1e-6 0, min -5.10e-07, max 4.36e-07
 [b = 5] tasks 38; by b {5: 38}
-  disj: optimal 38, time limit 0; solver s median 6.93 max 20.9; nodes median 1 max 415; build s max 5.60
-  bigmh: optimal 38, time limit 0; solver s median 59.91 max 123.9; nodes median 1 max 131; build s max 8.19
-  bigm: optimal 0, time limit 38; solver s median 600.15 max 600.6; nodes median 512 max 2446; build s max 10.99
-  median time ratio: bigmh/disj 7.64 (all runs), bigm/disj nan (bigm optimal), bigm/bigmh nan (both optimal)
+  disj: optimal 38, time limit 0; solver s median 0.91 max 3.1; nodes median 1 max 415; at the root 84%; build s max 0.87
+  bigmh: optimal 38, time limit 0; solver s median 8.00 max 21.5; nodes median 1 max 131; at the root 84%; build s max 1.98
+  bigm: optimal 2, time limit 36; solver s median 600.02 max 601.4; nodes median 6426 max 34713; at the root 0%; build s max 3.66
+  LP relaxations solved separately, solver s median: disj 0.15, bigmh 2.73, bigm 2.83
+  median time ratio: bigmh/disj 8.61 (all runs), bigm/disj 560.9 (bigm optimal), bigm/bigmh 54.0 (both optimal)
   root bound: max |bigmh_lp - hull| rel 3.51e-10; (bigm_lp - hull) rel mean 1.22e-02 max 1.22e-01
   bigmh vs disj objective (both optimal): above by >1e-6 0, below by >1e-6 5, min -7.30e-06, max 7.66e-07
-  bigm vs disj objective (both optimal): above by >1e-6 0, below by >1e-6 0, min nan, max nan
+  bigm vs disj objective (both optimal): above by >1e-6 0, below by >1e-6 0, min -1.58e-08, max -3.39e-09
