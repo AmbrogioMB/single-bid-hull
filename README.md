@@ -137,8 +137,10 @@ with a load of about 95 of 112 cores, so absolute times are larger than in the o
 - the relaxation of `bigmh` equals the hull LP within 3.5e-10 relative on every task;
 - `bigmh` solves every task, 94% at the root node, in at most 124 s; big-M alone reaches the time limit on 76 of the
   114 tasks with b >= 3 (74 in the part `round_day`, run under a different load);
-- median solver time relative to the disjunctive formulation: 7.4 for `bigmh`; the root LP of `bigmh` takes a median
-  of 4.4 s against 0.17 s (about 36,000 constraints against 10,500);
+- median solver time relative to the disjunctive formulation: 7.4 for `bigmh`; the separately solved LP relaxations
+  (runs `bigmh_lp`, `disj_lp`) take a median of 4.4 s against 0.17 s, with about 36,000 constraints against 10,500.
+  The two formulations differ in several ways (price variables, auxiliary binaries, constraints, integer encoding),
+  so the run does not attribute the remaining difference to one of them.
 - six `bigmh` runs reported optimal are below the disjunctive optimum of the same run by more than 1e-6 relative (at
   most 7.30e-6); none is above.
 
