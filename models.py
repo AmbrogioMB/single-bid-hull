@@ -2,7 +2,9 @@
 
   hull   problem (Pbar): the polytope T_n of Theorem 1 for every decision node and period (LP);
   disj   sharp disjunctive formulation, 2K + 2 binaries per decision node and period (Proposition 4);
-  bigm   big-M formulation of the thesis (appendix of the paper), direction binary per node and period.
+  bigm   big-M formulation of the thesis (appendix of the paper), direction binary per node and period;
+  bigmh  bigm plus the K + 3 inequalities of Theorem 1 (ablation: hull inequalities without removing prices);
+  ind    the same rule with indicator constraints.
 
 Each formulation can be solved as a MILP or as its LP relaxation (`relax=True`). The bound on the bid
 of period j is u_j = share * q_da_j. Quantities are powers (MW) over quarter-hours, so the profit of a
@@ -72,10 +74,16 @@ def _node(model, formulation, g, prices, u):
         for i in range(K):
             model.addConstr(first[i] == gp.quicksum(vertices[v][i] * mu[v] for v in range(len(vertices)) if vertices[v][i]))
         return len(vertices)
-    if formulation == "bigm":
+    if formulation in ("bigm", "bigmh"):
         lo, hi = min(prices) - 1.0, max(prices) + 1.0
         Mp = hi - lo + 2 * EPS
         q = model.addVar(lb=-u, ub=u)
+        if formulation == "bigmh":
+            # Big-M plus the inequalities of Theorem 1 on (q, gamma): valid, since every point of the big-M
+            # formulation is a single bid; its LP relaxation has the hull bound when price gaps are >= EPS.
+            model.addConstrs(first[i] <= first[i + 1] for i in range(K - 1))
+            model.addConstr(2 * first[-1] - u <= q)
+            model.addConstr(q <= 2 * first[0] + u)
         p = model.addVar(lb=lo, ub=hi)
         y = model.addVar(vtype=GRB.BINARY)
         model.addConstr(q <= u * y)

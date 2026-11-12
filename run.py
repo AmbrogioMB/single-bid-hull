@@ -44,7 +44,7 @@ def parse_args(argv=None):
     p.add_argument("--workers", type=int, default=1)
     p.add_argument("--price-dir", default=data.DEFAULT_PRICE_DIR)
     p.add_argument("--runs", nargs="+", default=["hull", "disj_lp", "bigm_lp", "disj", "bigm", "ind"],
-                   help="formulations to solve: hull, disj, bigm, ind; suffix _lp = LP relaxation")
+                   help="formulations to solve: hull, disj, bigm, bigmh, ind; suffix _lp = LP relaxation")
     p.add_argument("--mip-gap", type=float, default=1e-6, help="relative MIP gap (0 = prove optimality)")
     p.add_argument("--feas-tol", type=float, default=None, help="Gurobi FeasibilityTol (default: solver's)")
     p.add_argument("--int-feas-tol", type=float, default=None, help="Gurobi IntFeasTol (default: solver's)")

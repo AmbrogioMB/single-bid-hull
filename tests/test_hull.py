@@ -110,6 +110,21 @@ def test_disjunctive_relaxation_is_hull(seed, eta):
     assert bigm_lp >= hull - 1e-6 * abs(hull)
 
 
+@pytest.mark.parametrize("seed", range(3))
+@pytest.mark.parametrize("eta", [0.5, 0.9])
+def test_bigm_with_hull_inequalities(seed, eta):
+    """With prices rounded to the tick (gaps >= EPS), big-M plus the inequalities of Theorem 1 has the hull LP as
+    relaxation and the same MILP optimum as the disjunctive formulation."""
+    t = random_tree(3, 3, seed)
+    trees.round_prices(t, 2)
+    hull = models.solve(t, "hull", eta, 0.95, env=ENV)["objective"]
+    bigmh_lp = models.solve(t, "bigmh", eta, 0.95, relax=True, env=ENV)["objective"]
+    disj = models.solve(t, "disj", eta, 0.95, env=ENV)["objective"]
+    bigmh = models.solve(t, "bigmh", eta, 0.95, env=ENV)["objective"]
+    assert bigmh_lp == pytest.approx(hull, rel=1e-7)
+    assert bigmh == pytest.approx(disj, rel=1e-5)
+
+
 @pytest.mark.parametrize("seed", range(5))
 @pytest.mark.parametrize("eta", [0.0, 0.5, 0.9])
 def test_no_trade_value(seed, eta):

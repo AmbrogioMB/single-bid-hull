@@ -12,6 +12,7 @@ tree:
 - `disj`: the disjunctive formulation of single bids derived from the hull;
 - `bigm`: a big-M formulation with the bid price as a variable;
 - `ind`: the same rule written with indicator constraints;
+- `bigmh`: the big-M formulation plus the inequalities of the hull (an ablation, see below);
 
 as mixed-integer programs or linear relaxations, with a mean-CVaR objective.
 
@@ -21,14 +22,15 @@ as mixed-integer programs or linear relaxations, with a mean-CVaR objective.
 |---|---|
 | `data.py` | loads the prices of one zone and the production of a 20 MW wind + 20 MW solar plant |
 | `tree.py` | scenario trees by nested k-means: one quarter-hour (`period_instance`) or a whole day (`day_instance`, 96 quarter-hours, CVaR on the daily profit) |
-| `models.py` | the four formulations, the risk-neutral closed form, the value of not trading |
+| `models.py` | the formulations (`hull`, `disj`, `bigm`, `ind`, and `bigmh` for the ablation), the risk-neutral closed form, the value of not trading |
 | `run.py` | one task = one tree and one risk weight; all formulations solved in the same process; one CSV row per task |
 | `make_table.py` | the table of the paper and every number quoted in the text, from the CSVs |
 | `fetch_weather.py` | downloads the weather data (`data/weather.csv`, included) |
 | `dates.txt` | the 19 test days |
 | `diag_tasks.csv` | the 17 tasks of the tolerance diagnosis |
+| `analyze_ablation.py` | the numbers of the ablation (big-M plus the hull inequalities), from `results/abl_day.csv.gz` |
 | `check_fixed_solution.py` | for a shortfall of big-M or indicators: fixes the disjunctive optimum in that model and re-solves it (log in `results/fixed_solution_check.txt`) |
-| `tests/` | numerical checks of the theorems (`uv run pytest`, 49 tests) |
+| `tests/` | numerical checks of the theorems (`uv run pytest`, 55 tests) |
 | `results/` | the results of the paper, one compressed CSV per part (one row per task), and the table and numbers made from them |
 
 ## Setup
@@ -79,6 +81,13 @@ uv run python run.py --kind period --tasks-file diag_tasks.csv --runs disj bigm 
 uv run python check_fixed_solution.py --tasks-file results/remaining_shortfalls.csv
 ```
 
+Ablation (big-M plus the hull inequalities; daily instances with rounded prices and eta > 0):
+
+```bash
+uv run python run.py --kind day --dates-file dates.txt --branching 2 3 4 5 --eta 0.5 0.9 --price-decimals 2 --runs hull disj_lp bigmh_lp bigm_lp disj bigmh bigm --workers 8 --out results/abl_day
+uv run python analyze_ablation.py results/abl_day.csv.gz --out results/ablation_numbers.txt
+```
+
 The sensitivity parts of the certified run use `--share 0.05` (or 0.2, 0.5) `--branching 3 --eta 0.5 0.9`,
 with outputs in `results/tight_period_s0.05` and similar.
 
@@ -109,9 +118,29 @@ certified optimum (disjunctive formulation solved with MIP gap 0, parts `tight_*
 - **Prices rounded to 0.01 EUR/MWh** (parts `round_*`). All formulations represent the same single bids. On the
   114 daily tasks with b >= 3 and eta > 0, big-M reaches the time limit on 74 and indicators on 19; on all
   daily tasks with eta > 0, the median ratio to the disjunctive solver time is 67 for indicators (all runs) and
-  57 for big-M (runs reported optimal); the disjunctive formulation needs at most 11.6 s. Compared with the
+  57 for big-M (runs reported optimal); the disjunctive formulation needs at most 11.7 s. Compared with the
   disjunctive objective of the same run (MIP gap 1e-6), runs reported optimal are below it by more than 1e-6
   in 36 indicator runs (at most 6.34e-5) and 34 big-M runs (at most 1.21e-4); these were not diagnosed.
+
+## Ablation: hull inequalities or removing the prices? (details for Section 6)
+
+The disjunctive formulation differs from big-M in two ways: its relaxation is the hull, and it has no bid-price
+variables. To separate the two, `bigmh` adds the K + 3 inequalities of the hull to the big-M formulation at every
+decision node and period. With prices rounded to the tick, every point of big-M is a single bid, so the inequalities
+are valid and the relaxation of `bigmh` has the hull bound (test `test_bigm_with_hull_inequalities`).
+
+Part `abl_day` (152 daily tasks, b in {2, 3, 4, 5}, eta in {0.5, 0.9}, rounded prices; the disjunctive, big-M, and
+`bigmh` MILPs in the same process, so times are paired; run with 16 workers on a shared workstation
+with a load of about 95 of 112 cores, so absolute times are larger than in the other parts). All counts in
+`results/ablation_numbers.txt`:
+
+- the relaxation of `bigmh` equals the hull LP within 3.5e-10 relative on every task;
+- `bigmh` solves every task, 94% at the root node, in at most 124 s; big-M alone reaches the time limit on 76 of the
+  114 tasks with b >= 3 (74 in the part `round_day`, run under a different load);
+- median solver time relative to the disjunctive formulation: 7.4 for `bigmh`; the root LP of `bigmh` takes a median
+  of 4.4 s against 0.17 s (about 36,000 constraints against 10,500);
+- six `bigmh` runs reported optimal are below the disjunctive optimum of the same run by more than 1e-6 relative (at
+  most 7.30e-6); none is above.
 
 ## License
 
